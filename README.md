@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="logo.jpg" alt="PhishGuard Logo" width="200">
+</p>
+
 <h1 align="center"> PhishGuard </h1>
 
 <p align="center">
@@ -56,6 +60,12 @@ The system has been upgraded to support large-scale datasets (18,000+ emails) wh
 3. **Launch the Guard**
    ```bash
    streamlit run phishing_detection.py
+   ```
+
+4. **Run Model Evaluation (Optional)**
+   To see detailed metrics (Accuracy, Precision, Recall, F1), run:
+   ```bash
+   python evaluate_metrics.py
    ```
 
 ## 🔍 How It Works

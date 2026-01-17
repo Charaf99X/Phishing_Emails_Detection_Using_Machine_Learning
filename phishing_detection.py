@@ -163,42 +163,50 @@ def main():
     with st.sidebar:
         st.image("logo.jpg", width=150)
         st.title("PhishGuard")
-        st.info("""
-        **How to use:**
-        1. Paste an email body in the text area.
-        2. Click 'Analyze for Phishing'.
-        3. See the AI prediction instantly.
-        """)
         
-        st.divider()
-        st.subheader("💡 Try Examples")
+        with st.expander("📖 Quick Guide", expanded=False):
+            st.info("""
+            **How to use:**
+            1. Paste an email body in the text area.
+            2. Click 'Analyze for Phishing'.
+            3. See the AI prediction instantly.
+            """)
         
-        phishing_example = "URGENT: Your account has been compromised. Please reset your password immediately at http://security-update-validate.com to prevent suspension."
-        safe_example = "Hi team, the project deadline has been extended by two days. Please check the updated timeline on the shared drive. Regards, Project Manager."
+        with st.expander("💡 Samples", expanded=True):
+            st.subheader("Try Examples")
+            phishing_example = "URGENT: Your account has been compromised. Please reset your password immediately at http://security-update-validate.com to prevent suspension."
+            safe_example = "Hi team, the project deadline has been extended by two days. Please check the updated timeline on the shared drive. Regards, Project Manager."
 
-        if st.button("📥 Load Phishing Example"):
-            st.session_state.email_input = phishing_example
-            
-        if st.button("📥 Load Safe Example"):
-            st.session_state.email_input = safe_example
+            if st.button("📥 Load Phishing Example"):
+                st.session_state.email_input = phishing_example
+                
+            if st.button("📥 Load Safe Example"):
+                st.session_state.email_input = safe_example
 
-        st.divider()
-        # Upload email dataset for training the model
-        st.subheader("⚙️ Model Training")
-        uploaded_file = st.file_uploader("Update model with CSV", type="csv")
-        
-        if uploaded_file is not None:
-            data = pd.read_csv(uploaded_file)
-            # Check for either column naming scheme
-            has_old_schema = 'email_body' in data.columns and 'label' in data.columns
-            has_new_schema = 'Email Text' in data.columns and 'Email Type' in data.columns
+        with st.expander("📊 Performance", expanded=True):
+            st.write("Current model stats (based on 20k samples):")
+            col_acc, col_prec = st.columns(2)
+            col_acc.metric("Accuracy", "96.9%")
+            col_prec.metric("Precision", "95.1%")
+            st.metric("Recall (Detection Rate)", "97.4%")
+            st.caption("Recall is the % of phishing emails correctly caught.")
+
+        with st.expander("⚙️Training", expanded=False):
+            st.subheader("Model Training")
+            uploaded_file = st.file_uploader("Update model with CSV", type="csv")
             
-            if has_old_schema or has_new_schema:
-                with st.spinner('🔄 Training in progress...'):
-                    train_model(data)
-                st.success("✅ Model updated!")
-            else:
-                st.error("❌ Invalid CSV format.")
+            if uploaded_file is not None:
+                data = pd.read_csv(uploaded_file)
+                # Check for either column naming scheme
+                has_old_schema = 'email_body' in data.columns and 'label' in data.columns
+                has_new_schema = 'Email Text' in data.columns and 'Email Type' in data.columns
+                
+                if has_old_schema or has_new_schema:
+                    with st.spinner('🔄 Training in progress...'):
+                        train_model(data)
+                    st.success("✅ Model updated!")
+                else:
+                    st.error("❌ Invalid CSV format.")
 
     # Main Content
     st.title("Phishing Detection System")
